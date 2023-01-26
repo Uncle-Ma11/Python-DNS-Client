@@ -1,6 +1,8 @@
 import argparse
 import sys
 
+from socket import *
+
 
 def read_input():
     parser = argparse.ArgumentParser()
@@ -15,13 +17,21 @@ def read_input():
     parser.add_argument("server")
     try:
         argv = parser.parse_args()
-        print(argv)
-        print(argv.name)
-        print(argv.server)
     except argparse.ArgumentError:
         print(
             "The input query form is not correct. \n should use: python DnsClient.py [-t timeout] [-r max-retries] [-p port] [-mx|-ns] @server name")
+    print(argv)
+    print(argv.name)
+    print(argv.server)
+    return argv
 
+def send_query(argv):
+    server_name = argv.name
+    server_port = argv.port
+
+    clientSocket = socket(AF_INET, SOCK_DGRAM)
+
+    
 
 if __name__ == "__main__":
     read_input()
