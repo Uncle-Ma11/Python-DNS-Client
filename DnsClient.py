@@ -25,13 +25,22 @@ def read_input():
     print(argv.server)
     return argv
 
+
 def send_query(argv):
-    server_name = argv.name
+    server_name = argv.name[1:]
     server_port = argv.port
 
-    clientSocket = socket(AF_INET, SOCK_DGRAM)
+    print(server_name, server_port)
 
-    
+    client_socket = socket(AF_INET, SOCK_DGRAM)
+
+    message = ""
+
+    client_socket.sendto(message.encode(), (server_name, server_port))
+    received_message, server_address = client_socket.recvfrom(2048)
+    print(received_message.decode())
+    client_socket.close()
+
 
 if __name__ == "__main__":
-    read_input()
+    send_query(read_input())
