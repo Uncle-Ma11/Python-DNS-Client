@@ -86,7 +86,7 @@ def format_query(arguments):
 
 
 def send_query(retried_time, request, args):
-    server_name = args.name
+    server_name = args.server[1:]
     server_port = args.port
 
     # for req in request:
@@ -103,7 +103,8 @@ def send_query(retried_time, request, args):
     try:
         client_socket.sendto(request, (server_name, server_port))
         received_message, server_address = client_socket.recvfrom(4096)
-        print(received_message.decode())
+        print(type(received_message))
+        print(received_message)
         client_socket.close()
     except timeout:
         if retried_time > args.retry:
