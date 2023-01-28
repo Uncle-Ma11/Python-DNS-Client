@@ -104,13 +104,13 @@ def send_query(retried_time, request, args):
         client_socket.sendto(request, (server_name, server_port))
         received_message, server_address = client_socket.recvfrom(4096)
         print(received_message.decode())
+        client_socket.close()
     except timeout:
         if retried_time > args.retry:
             print("No response received after retries.")
             return
         else:
             send_query(retried_time + 1, request, args)
-    client_socket.close()
 
 
 if __name__ == "__main__":
