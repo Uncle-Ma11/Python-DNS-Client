@@ -259,12 +259,14 @@ def seek_pointer(offset, response):
     alias = ""
     count = 0
     for byte in data:
+        # print(alias)
         if byte == 0:
             break
         if byte >= 192:
             pointer1 = bin(byte - 192)
             pointer2 = bin(data[count + 1])
             offset_num = int(pointer1, 2) * 16 + int(pointer2, 2)
+            # print(offset_num)
             alias += seek_pointer(offset_num, response)
         elif byte <= 32:
             alias = alias + "."
