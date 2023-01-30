@@ -231,6 +231,7 @@ def resolve_alias(response, data):
     # print(data)
     alias = ""
     count = 0
+    pointer_used = False
     for byte in data:
         if byte == 0:
             break
@@ -239,19 +240,24 @@ def resolve_alias(response, data):
             pointer2 = bin(data[count + 1])
             offset_num = int(pointer1, 2) * 16 + int(pointer2, 2)
             alias += seek_pointer(offset_num, response)
+            pointer_used = True
         elif byte <= 32:
             alias = alias + "."
         else:
             alias = alias + chr(byte)
         count += 1
-    return alias[1:len(alias) - 1]
+    if pointer_used:
+        return alias[1:len(alias) - 1]
+    else:
+        return alias[1:]
 
 
 def seek_pointer(offset, response):
+    # print(offset)
     data = response[offset:]
     # print(data)
     alias = ""
-    count = offset
+    count = 0
     for byte in data:
         if byte == 0:
             break
@@ -264,6 +270,7 @@ def seek_pointer(offset, response):
             alias = alias + "."
         else:
             alias = alias + chr(byte)
+        # print(alias)
         count += 1
     return alias
 
@@ -278,13 +285,13 @@ def output_result(response, request_length):
         auth = False
     an_count = response[6:8]
     an_count_num = an_count[0] * 16 + an_count[1]
-    print("*** Answer Section ( {} records) ***".format(an_count_num))
+    print("*** Answer Section ( {} records ) ***".format(an_count_num))
     if an_count_num == 0:
         print("NOT FOUND")
     answer_pos = read_record(response, request_length, auth, 1, an_count_num)
     ar_count = response[10:12]
     ar_count_num = ar_count[0] * 16 + ar_count[1]
-    print("*** Additional Section ( {} records) ***".format(ar_count_num))
+    print("*** Additional Section ( {} records ) ***".format(ar_count_num))
     if ar_count_num == 0:
         print("NOT FOUND")
     read_record(response, answer_pos, auth, 1, ar_count_num)
