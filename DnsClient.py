@@ -268,6 +268,7 @@ def seek_pointer(offset, response):
             offset_num = int(pointer1, 2) * 16 + int(pointer2, 2)
             # print(offset_num)
             alias += seek_pointer(offset_num, response)
+            break
         elif byte <= 32:
             alias = alias + "."
         else:
@@ -285,6 +286,21 @@ def output_result(response, request_length):
         auth = True
     else:
         auth = False
+
+    r_code = response[3] % 16
+    if r_code == 1:
+        print("ERROR\tFormat error: the name server was unable to interpret the query")
+    elif r_code == 2:
+        print("ERROR\tServer failure: the name server was unable to process this query due to a problem with the name server")
+    elif r_code == 3:
+        print("NOT FOUND")
+    elif r_code == 4:
+        print("ERROR\tNot implemented: the name server does not support the requested kind of query")
+    elif r_code == 5:
+        print("ERROR\tRefused: the name server refuses to perform the requested operation for policy reasons")
+    else:
+        print("No Error detected")
+
     an_count = response[6:8]
     an_count_num = an_count[0] * 16 + an_count[1]
     print("*** Answer Section ( {} records ) ***".format(an_count_num))
